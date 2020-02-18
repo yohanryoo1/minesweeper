@@ -5,13 +5,13 @@ var board = {
   cells: [
           { row: 0,
             col: 0,
-            isMine: false,
+            isMine: true, //mine
             hidden: true,
             isMarked: false,
             surroundingMines: 0}, 
           { row: 0, 
             col: 1,
-            isMine: true,
+            isMine: false,
             hidden: true,
             isMarked: false,
             surroundingMines: 0}, 
@@ -23,7 +23,7 @@ var board = {
             surroundingMines: 0},
           { row: 1, 
             col: 0,
-            isMine: true,
+            isMine: false,
             hidden: true,
             isMarked: false,
             surroundingMines: 0}, 
@@ -62,24 +62,34 @@ var board = {
 
 function startGame () {
   // Don't remove this function call: it makes the game work!
-  board.cells.forEach((cell) => {
-    //assign the result of countSurroundingMines to a property on each cell object. The new property should be called surroundingMines
-    cell.surroundingMines = countSurroundingMines(cell);
-    
-  })
   lib.initBoard()
-}
+  //assign the result of countSurroundingMines to a property on each cell object. The new property should be called surroundingMines
+  board.cells.forEach((cell) => {
+    cell.surroundingMines = countSurroundingMines(cell);
+  })
+  document.addEventListener('click', checkForWin);
+  document.addEventListener('contextmenu', checkForWin);
+};
+
 
 // Define this function to look for a win condition:
-//
-// 1. Are all of the cells that are NOT mines visible?
-// 2. Are all of the mines marked?
 function checkForWin () {
 
-  // You can use this function call to declare a winner (once you've
-  // detected that they've won, that is!)
-  //   lib.displayMessage('You win!')
-}
+  // for loops can be exited after ANY interation
+  for (let i = 0; i < board.cells.length; i++) {
+    if (board.cells[i].isMine && !board.cells[i].isMarked) return;
+    else if (!board.cells[i].isMine && board.cells[i].hidden) return;
+  }
+
+  // ! ! ! Can not use .forEach in this case ! ! !
+  // .forEach loops from beginning to end. 
+  // board.cells.forEach((cell) => {
+  //   if (cell.isMine && !cell.isMarked) return;
+  //   if (!cell.isMine && cell.hidden) return;
+  // })
+
+  lib.displayMessage('You win!');
+};
 
 // Define this function to count the number of mines around the cell
 // (there could be as many as 8). You don't have to get the surrounding
